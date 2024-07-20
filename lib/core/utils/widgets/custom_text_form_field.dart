@@ -1,37 +1,32 @@
 import 'package:flutter/material.dart';
 
-class TextFormFieldWidget extends StatelessWidget {
-  final Widget prefixIcon;
-  final String labelText;
-  final TextStyle labelStyle;
+class CustomTextFormField extends StatelessWidget {
   final TextEditingController controller;
-  final Widget? suffixIcon;
+  final String labelText;
+  final IconData icon;
   final bool obscureText;
   final String? Function(String?)? validator;
 
-  const TextFormFieldWidget({
-    super.key,
-    required this.prefixIcon,
-    required this.labelText,
-    required this.labelStyle,
+  const CustomTextFormField({
+    Key? key,
     required this.controller,
-    this.suffixIcon,
+    required this.labelText,
+    required this.icon,
     this.obscureText = false,
     this.validator,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
-      validator: validator,
       decoration: InputDecoration(
-        prefixIcon: prefixIcon,
         labelText: labelText,
-        labelStyle: labelStyle,
-        suffixIcon: suffixIcon,
+        prefixIcon: Icon(icon),
+        border: const OutlineInputBorder(),
       ),
+      validator: validator,
     );
   }
 }

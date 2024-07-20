@@ -1,8 +1,11 @@
-// class name extends StatelessWidget {
-//   const name({super.key});
+import 'package:flutter/material.dart';
+import 'package:test_project/core/utils/app_color.dart';
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container();
-//   }
-// }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(backgroundColor: AppColors.backgroundColor, body: Container());
+  }
+}

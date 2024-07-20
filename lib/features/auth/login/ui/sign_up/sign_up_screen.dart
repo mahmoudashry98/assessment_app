@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:test_project/core/utils/widgets/text_form_field.dart';
+import 'package:test_project/core/utils/widgets/custom_elevated_button.dart';
+import 'package:test_project/core/utils/widgets/custom_text_form_field.dart';
+import 'package:test_project/core/vaildator/auth_vaildator.dart';
 import 'package:test_project/features/auth/login/controller/cubit.dart';
 import 'package:test_project/features/auth/login/controller/states.dart';
 
@@ -24,37 +26,19 @@ class SignUpScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextFormFieldWidget(
-                prefixIcon: const Icon(Icons.email),
-                labelText: 'Email',
-                labelStyle: const TextStyle(fontSize: 16),
+              CustomTextFormField(
                 controller: _emailController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Please enter a valid email address';
-                  }
-                  return null;
-                },
+                labelText: 'Email',
+                icon: Icons.email,
+                validator: Validators.emailValidator,
               ),
               const SizedBox(height: 16),
-              TextFormFieldWidget(
-                prefixIcon: const Icon(Icons.lock),
-                labelText: 'Password',
-                labelStyle: const TextStyle(fontSize: 16),
+              CustomTextFormField(
                 controller: _passwordController,
+                labelText: 'Password',
+                icon: Icons.lock,
                 obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters long';
-                  }
-                  return null;
-                },
+                validator: Validators.passwordValidator,
               ),
               const SizedBox(height: 16),
               BlocConsumer<LoginCubit, LoginState>(
@@ -75,7 +59,7 @@ class SignUpScreen extends StatelessWidget {
                     return const CircularProgressIndicator();
                   }
 
-                  return ElevatedButton(
+                  return CustomElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
                         final email = _emailController.text;
@@ -83,7 +67,7 @@ class SignUpScreen extends StatelessWidget {
                         context.read<LoginCubit>().signUp(email, password);
                       }
                     },
-                    child: const Text('Sign Up'),
+                    text: 'Sign Up',
                   );
                 },
               ),

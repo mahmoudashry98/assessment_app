@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:test_project/core/utils/widgets/text_form_field.dart';
-import 'package:test_project/features/auth/sign_up/ui/sign_up_screen.dart';
+import 'package:test_project/core/utils/widgets/custom_elevated_button.dart';
+import 'package:test_project/core/utils/widgets/custom_text_form_field.dart';
+import 'package:test_project/core/vaildator/auth_vaildator.dart';
+import 'package:test_project/features/auth/login/ui/sign_up/sign_up_screen.dart';
 
-import '../controller/cubit.dart';
-import '../controller/states.dart';
+import '../../controller/cubit.dart';
+import '../../controller/states.dart';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -26,37 +28,19 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextFormFieldWidget(
-                prefixIcon: const Icon(Icons.email),
-                labelText: 'Email',
-                labelStyle: const TextStyle(fontSize: 16),
+              CustomTextFormField(
                 controller: _emailController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Please enter a valid email address';
-                  }
-                  return null;
-                },
+                labelText: 'Email',
+                icon: Icons.email,
+                validator: Validators.emailValidator,
               ),
               const SizedBox(height: 16),
-              TextFormFieldWidget(
-                prefixIcon: const Icon(Icons.lock),
-                labelText: 'Password',
-                labelStyle: const TextStyle(fontSize: 16),
+              CustomTextFormField(
                 controller: _passwordController,
+                labelText: 'Password',
+                icon: Icons.lock,
                 obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters long';
-                  }
-                  return null;
-                },
+                validator: Validators.passwordValidator,
               ),
               const SizedBox(height: 16),
               BlocConsumer<LoginCubit, LoginState>(
@@ -78,7 +62,7 @@ class LoginScreen extends StatelessWidget {
 
                   return Column(
                     children: [
-                      ElevatedButton(
+                      CustomElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
                             final email = _emailController.text;
@@ -86,7 +70,7 @@ class LoginScreen extends StatelessWidget {
                             context.read<LoginCubit>().login(email, password);
                           }
                         },
-                        child: const Text('Login'),
+                        text: 'Login',
                       ),
                       const SizedBox(height: 8),
                       TextButton(
