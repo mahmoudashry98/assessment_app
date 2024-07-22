@@ -1,61 +1,74 @@
-// ignore: depend_on_referenced_packages
-import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_project/modules/auth/login/controller/states.dart';
 
-class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginInitial());
+class AuthCubit extends Cubit<AuthState> {
+  AuthCubit() : super(AuthInitial());
 
   Future<void> login(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
-      emit(const LoginFailure("Please fill all fields"));
+      emit(AuthFailure("Please fill all fields"));
       return;
     }
 
     try {
-      emit(LoginLoading());
+      emit(AuthLoading());
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-      emit(LoginSuccess());
+      emit(AuthSuccess());
     } on FirebaseAuthException catch (e) {
-      emit(LoginFailure(_handleFirebaseAuthException(e)));
+      switch (e.code) {
+        case 'user-not-found':
+          emit(AuthFailure("No account found for this email address"));
+          break;
+        case 'wrong-password':
+          emit(AuthFailure("Incorrect password provided"));
+          break;
+        case 'invalid-email':
+          emit(AuthFailure("The email address is not valid."));
+          break;
+        case 'user-disabled':
+          emit(AuthFailure("This user has been disabled."));
+          break;
+        default:
+          emit(AuthFailure(_handleFirebaseAuthException(e)));
+          break;
+      }
     } catch (e) {
-      emit(const LoginFailure("An unexpected error occurred. Please try again."));
+      emit(AuthFailure("An unexpected error occurred. Please try again."));
     }
   }
 
   Future<void> signUp(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
-      emit(const LoginFailure("Please fill all fields"));
+      emit(AuthFailure("Please fill all fields"));
       return;
     }
 
     try {
-      emit(LoginLoading());
+      emit(AuthLoading());
       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-      emit(LoginSuccess());
+      emit(AuthSuccess());
     } on FirebaseAuthException catch (e) {
-      emit(LoginFailure(_handleFirebaseAuthException(e)));
+      switch (e.code) {
+        case 'email-already-in-use':
+          emit(AuthFailure("This email address is already in use"));
+          break;
+        case 'invalid-email':
+          emit(AuthFailure("The email address is not valid."));
+          break;
+        case 'weak-password':
+          emit(AuthFailure("The password provided is too weak."));
+          break;
+        default:
+          emit(AuthFailure(_handleFirebaseAuthException(e)));
+          break;
+      }
     } catch (e) {
-      emit(const LoginFailure("An unexpected error occurred. Please try again."));
+      emit(AuthFailure("An unexpected error occurred. Please try again."));
     }
   }
 
   String _handleFirebaseAuthException(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'invalid-email':
-        return 'The email address is not valid.';
-      case 'user-disabled':
-        return 'This user has been disabled.';
-      case 'user-not-found':
-        return 'No user found with this email.';
-      case 'wrong-password':
-        return 'Incorrect password. Please try again.';
-      case 'email-already-in-use':
-        return 'The email address is already in use by another account.';
-      case 'weak-password':
-        return 'The password is too weak.';
-      default:
-        return 'An authentication error occurred. Please try again.';
-    }
+    return e.message ?? "An unknown error occurred. Please try again.";
   }
 }

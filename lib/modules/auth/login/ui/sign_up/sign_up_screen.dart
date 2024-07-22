@@ -44,13 +44,13 @@ class SignUpScreen extends StatelessWidget {
                 validator: Validators.passwordValidator,
               ),
               const SizedBox(height: 16),
-              BlocConsumer<LoginCubit, LoginState>(
+              BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) {
-                  if (state is LoginFailure) {
+                  if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.message)),
                     );
-                  } else if (state is LoginSuccess) {
+                  } else if (state is AuthSuccess) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Sign Up Successful')),
                     );
@@ -58,7 +58,7 @@ class SignUpScreen extends StatelessWidget {
                   }
                 },
                 builder: (context, state) {
-                  if (state is LoginLoading) {
+                  if (state is AuthLoading) {
                     return const CircularProgressIndicator();
                   }
 
@@ -67,7 +67,7 @@ class SignUpScreen extends StatelessWidget {
                       if (_formKey.currentState?.validate() ?? false) {
                         final email = _emailController.text;
                         final password = _passwordController.text;
-                        context.read<LoginCubit>().signUp(email, password).then((value) => Navigator.push(
+                        context.read<AuthCubit>().signUp(email, password).then((value) => Navigator.push(
                             context, MaterialPageRoute(builder: (context) => const NavMenuScreen())));
                       }
                     },
