@@ -41,7 +41,7 @@ This is a Flutter-based mobile application for an e-commerce platform. The app a
     
 ## Download APK
 
-[Download APK](https://drive.google.com/file/d/1lOVctofObq2zagIxOHIMhJw_f-OW4M3W/view?usp=sharing)
+[Download APK]([https://drive.google.com/file/d/1lOVctofObq2zagIxOHIMhJw_f-OW4M3W/view?usp=sharing](https://drive.google.com/file/d/1Xt18RL7_usuEMih6pl8hjVtHPkU3DgHA/view?usp=sharing))
 ## Configuration
 
 - **Firebase:** The app uses Firebase for authentication and database. Set up a Firebase project and add the `google-services.json` file in the `android/app` directory and `GoogleService-Info.plist` file in the `ios/Runner` directory.
