@@ -2,6 +2,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:test_project/core/utils/app_color.dart';
+import 'package:test_project/core/utils/widgets/function_widget.dart';
+import 'package:test_project/core/utils/widgets/gradient_elevated_button.dart';
+import 'package:test_project/core/utils/widgets/gradient_text.dart';
 import 'package:test_project/modules/home/data/product_model.dart';
 import 'package:test_project/modules/home/widgets/home_header.dart';
 
@@ -22,7 +25,7 @@ class ProductDetails extends StatelessWidget {
             child: HomeHeader(
               text: product.title,
               isActionIcon: false,
-              image:'assets/icons/chevron.left.png',
+              image: 'assets/icons/chevron.left.png',
             ),
           ),
           Positioned(
@@ -61,43 +64,36 @@ class ProductDetails extends StatelessWidget {
                     return const Icon(Icons.error);
                   },
                 ),
-                const SizedBox(height: 10), // if (controller.hotelData!.images!.isNotEmpty)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 24.0,
-                      width: 78,
-                      padding: const EdgeInsets.only(top: 10),
-                      child: ListView(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        // controller: scrollController,
-                        scrollDirection: Axis.horizontal,
-                        children: List.generate(4,
-                            // controller.hotelData!.images!.length < 4
-                            //     ? 0
-                            //     : controller.hotelData!.images!.length,
-                            (int index) {
-                          return Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 2.0),
-                            width: getCircleSize(1, 2),
-                            height: getCircleSize(1, 2),
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              //  controller.currentImage.value == index
-                              //     ? kMainColor
-                              //     : kWhiteColor.withOpacity(0.7),
-                              shape: BoxShape.circle,
-                            ),
-                          );
-                        }),
+                const SizedBox(height: 10),
+                if (product.images.isNotEmpty)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 24.0,
+                        width: 78,
+                        padding: const EdgeInsets.only(top: 10),
+                        child: ListView(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          children: List.generate(4, (int index) {
+                            return Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 2.0),
+                              width: FunctionWidget.getCircleSize(1, 2),
+                              height: FunctionWidget.getCircleSize(1, 2),
+                              decoration: BoxDecoration(
+                                color: AppColors.whiteColor,
+                                shape: BoxShape.circle,
+                              ),
+                            );
+                          }),
+                        ),
                       ),
-                    ),
-                  ],
-                )
-                // else
-                //   const SizedBox(),
+                    ],
+                  )
+                else
+                  const SizedBox(),
               ],
             ),
           ),
@@ -241,91 +237,6 @@ class ProductDetails extends StatelessWidget {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  static double getCircleSize(int index, int currentIndex) {
-    if (index <= currentIndex) {
-      return 9.0;
-    } else {
-      2.0 * (index - currentIndex);
-    }
-    return 4;
-  }
-}
-
-class GradientText extends StatelessWidget {
-  final String text;
-  final Gradient gradient;
-  final Color color;
-  final bool normalColor;
-
-  const GradientText({
-    Key? key,
-    required this.text,
-    required this.gradient,
-    this.color = Colors.white,
-    this.normalColor = false,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return normalColor
-        ? Text(
-            text,
-            style: TextStyle(
-              color: color.withOpacity(0.4),
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-            ),
-          )
-        : ShaderMask(
-            shaderCallback: (bounds) => gradient.createShader(
-              Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-            ),
-            child: Text(
-              text,
-              style: const TextStyle(
-                color: Colors.white, // Placeholder color, not visible due to ShaderMask
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          );
-  }
-}
-
-class GradientElevatedButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final Widget child;
-
-  const GradientElevatedButton({super.key, required this.onPressed, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF34C8E8),
-            Color(0xFF4E4AF2),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: child,
       ),
     );
   }
